@@ -35,30 +35,40 @@ public class Main {
             System.out.println("Wrong option!");
             return;
         }
-
+        
+        scanner.nextLine();
         System.out.print("  Insert text: ");
-        String text = scanner.next();
+        String text = scanner.nextLine();
+        String key;
 
         switch (option) {
             case 'a':
                 System.out.print("  Insert key: ");
+                key = scanner.nextLine();
                 if (method == METHOD_ENCRYPT) {
                     System.out.println("  Chiper : " + 
                         Encryptor.New(Encryptor.VIGENERE_STANDARD)
-                            .SetKey(scanner.next())
+                            .SetKey(key)
                             .Encrypt(text));
                 } else {
                     System.out.println("  Plain : " + 
                         Decryptor.New(Encryptor.VIGENERE_STANDARD)
-                            .SetKey(scanner.next())
+                            .SetKey(key)
                             .Decrypt(text));
                 }
                 break;
             case 'b':
-                
+
                 break;
             case 'c':
-                
+                System.out.print("  Insert key: ");
+                key = scanner.nextLine();
+                if (method == METHOD_ENCRYPT) {
+                    System.out.println("  Chiper : " + 
+                        Encryptor.New(Encryptor.PLAYFAIR)
+                            .SetKey(key)
+                            .Encrypt(text));
+                }                
                 break;
             default:
                 System.out.println("Wrong option!");
