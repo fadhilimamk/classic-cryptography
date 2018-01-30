@@ -1,6 +1,8 @@
 package com.fadhil.crypto;
 
 import java.util.*;
+import java.lang.*;
+import java.nio.file.Files;
 import java.io.*;
 
 public class Main {
@@ -17,7 +19,7 @@ public class Main {
     public static void main(String args[]) {
         Boolean isError = false;
         Scanner scanner = new Scanner(System.in);
-        char method; String text, key; int algo;
+        char method; String text = null, key = null; int algo;
         File file;
 
         System.out.println("    ______                 __      ");
@@ -51,10 +53,17 @@ public class Main {
                 if (args[2].equals(INPUT_TEXT)) {
                     filename = args[3]; file = new File(filename);
                     fileScanner = new Scanner(file);
+
+                    StringBuilder sb = new StringBuilder();
+                    while (fileScanner.hasNext()) {
+                        sb.append(fileScanner.nextLine());
+                    }
+                    text = sb.toString();
+
                 } else if (args[2].equals(INPUT_FILE)) {
-                    filename = args[3]; file = new File(filename);
-                    outfile = args[4];
-                    fileScanner = new Scanner(file);
+                    filename = args[3];
+                    byte byteBuffer[] = Files.readAllBytes(new File(filename).toPath());
+                    return;
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -67,18 +76,22 @@ public class Main {
         algo = args[1].equals(CRYPT_VIGENERE) ? 
                 Encryptor.VIGENERE_STANDARD : 
                 (args[1].equals(CRYPT_VIGENERE_EXTENDED) ? Encryptor.VIGENERE_EXTENDED : Encryptor.PLAYFAIR);
+        
+        // Read key and text
         System.out.print("Insert key    : ");
         key = scanner.nextLine();
-        System.out.print("Insert text   : ");
-        text = scanner.nextLine();
+        if (text == null) {
+            System.out.print("Insert text   : ");
+            text = scanner.nextLine();
+        }
 
         if (method == METHOD_ENCRYPT) {
-            System.out.println("Chiper  : " + 
+            System.out.println("Chiper        : " + 
             Encryptor.New(algo)
                 .SetKey(key)
                 .Encrypt(text));
         } else {
-            System.out.println("Plain   : " + 
+            System.out.println("Plain         : " + 
             Decryptor.New(Encryptor.VIGENERE_STANDARD)
                 .SetKey(key)
                 .Decrypt(text));
