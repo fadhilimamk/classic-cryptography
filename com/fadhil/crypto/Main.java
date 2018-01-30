@@ -13,6 +13,7 @@ public class Main {
     public static void main(String args[]) {
         Boolean isError = false;
         Scanner scanner = new Scanner(System.in);
+        char method; String text, key; int algo;
 
         System.out.println("    ______                 __      ");
         System.out.println("   / ____/______  ______  / /_____ ");
@@ -27,7 +28,7 @@ public class Main {
             System.out.println("Error: WRONG ARGUMENT!"); isError = true;
         } else if (args[0].charAt(0) != METHOD_ENCRYPT && args[0].charAt(0) != METHOD_DECRYPT) {
             System.out.println("Error: UNKNOWN METHOD!"); isError = true;
-        } else if (!args[1].equals(CRYPT_PLAYFAIR) && !args[1].equals(CRYPT_VIGENERE_EXTENDED) && !args[1].equals(CRYPT_PLAYFAIR)) {
+        } else if (!args[1].equals(CRYPT_VIGENERE) && !args[1].equals(CRYPT_VIGENERE_EXTENDED) && !args[1].equals(CRYPT_PLAYFAIR)) {
             System.out.println("Error: UNKNOWN ALGORITHM!"); isError = true;
         }
 
@@ -35,64 +36,26 @@ public class Main {
             showHelp();
             return;
         }
- 
 
-        // Read desired method to be executed
-        System.out.println("Classic Cryptography\n");
-        System.out.println("  Choose method:");
-        System.out.println("    a. Encryption");
-        System.out.println("    b. Decryption");
-        System.out.print("  Select (a/b) ");
-        char method = scanner.next().charAt(0);
-        if (method != METHOD_ENCRYPT && method != METHOD_DECRYPT) {
-            System.out.println("Wrong option!");
-            return;
-        }
+        method = args[0].charAt(0);
+        algo = args[1].equals(CRYPT_VIGENERE) ? 
+                Encryptor.VIGENERE_STANDARD : 
+                (args[1].equals(CRYPT_VIGENERE_EXTENDED) ? Encryptor.VIGENERE_EXTENDED : Encryptor.PLAYFAIR);
+        System.out.print("Insert key    : ");
+        key = scanner.nextLine();
+        System.out.print("Insert text   : ");
+        text = scanner.nextLine();
 
-        System.out.println("\n  Choose algorithm:");
-        System.out.println("    a. Vigenere Standard");
-        System.out.println("    b. Vigenere Extended");
-        System.out.println("    c. Playfair\n");
-        System.out.print("  Select (a/b/c) ");
-        char option = scanner.next().charAt(0); 
-        
-        scanner.nextLine();
-        System.out.print("  Insert text: ");
-        String text = scanner.nextLine();
-        String key;
-
-        switch (option) {
-            case 'a':
-                System.out.print("  Insert key: ");
-                key = scanner.nextLine();
-                if (method == METHOD_ENCRYPT) {
-                    System.out.println("  Chiper : " + 
-                        Encryptor.New(Encryptor.VIGENERE_STANDARD)
-                            .SetKey(key)
-                            .Encrypt(text));
-                } else {
-                    System.out.println("  Plain : " + 
-                        Decryptor.New(Encryptor.VIGENERE_STANDARD)
-                            .SetKey(key)
-                            .Decrypt(text));
-                }
-                break;
-            case 'b':
-
-                break;
-            case 'c':
-                System.out.print("  Insert key: ");
-                key = scanner.nextLine();
-                if (method == METHOD_ENCRYPT) {
-                    System.out.println("  Chiper : " + 
-                        Encryptor.New(Encryptor.PLAYFAIR)
-                            .SetKey(key)
-                            .Encrypt(text));
-                }                
-                break;
-            default:
-                System.out.println("Wrong option!");
-                return;
+        if (method == METHOD_ENCRYPT) {
+            System.out.println("Chiper  : " + 
+            Encryptor.New(algo)
+                .SetKey(key)
+                .Encrypt(text));
+        } else {
+            System.out.println("Plain   : " + 
+            Decryptor.New(Encryptor.VIGENERE_STANDARD)
+                .SetKey(key)
+                .Decrypt(text));
         }
 
     }
