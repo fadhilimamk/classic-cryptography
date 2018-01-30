@@ -1,6 +1,7 @@
 package com.fadhil.crypto;
 
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
@@ -9,11 +10,15 @@ public class Main {
     private static String CRYPT_VIGENERE = "vigenere";
     private static String CRYPT_VIGENERE_EXTENDED = "vigenere-etd";
     private static String CRYPT_PLAYFAIR = "playfair";
+    private static String INPUT_STDIO = "--stdio";
+    private static String INPUT_TEXT = "--text";
+    private static String INPUT_FILE = "--file";
 
     public static void main(String args[]) {
         Boolean isError = false;
         Scanner scanner = new Scanner(System.in);
         char method; String text, key; int algo;
+        File file;
 
         System.out.println("    ______                 __      ");
         System.out.println("   / ____/______  ______  / /_____ ");
@@ -35,6 +40,27 @@ public class Main {
         if (isError) {
             showHelp();
             return;
+        }
+
+        // Handle input_mode
+        if (args.length > 2) {
+            String filename, outfile;
+            Scanner fileScanner;
+
+            try {
+                if (args[2].equals(INPUT_TEXT)) {
+                    filename = args[3]; file = new File(filename);
+                    fileScanner = new Scanner(file);
+                } else if (args[2].equals(INPUT_FILE)) {
+                    filename = args[3]; file = new File(filename);
+                    outfile = args[4];
+                    fileScanner = new Scanner(file);
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                showHelp();
+                return;
+            }
         }
 
         method = args[0].charAt(0);
@@ -64,16 +90,20 @@ public class Main {
         System.out.println("USAGE:");
         System.out.println("    method algorithm [input_mode] [file]\n");
         System.out.println("    method:");
-        System.out.println("        e               Encryption mode, use this to encrypt text or file");
-        System.out.println("        d               Decryption mode, use this to decrypt text or file\n");
+        System.out.println("        e                       Encryption mode, use this to encrypt text or file");
+        System.out.println("        d                       Decryption mode, use this to decrypt text or file\n");
         System.out.println("    algorithm:");
-        System.out.println("        vigenere        Standard Vigenere Cipher (26 alphabet characters)");
-        System.out.println("        vigenere-etd    Extend of Vigenere Cipher (256 ASCII characters)");        
-        System.out.println("        playfair        Playfair Cipher (26 alphabet characters)\n");
+        System.out.println("        vigenere                Standard Vigenere Cipher (26 alphabet characters)");
+        System.out.println("        vigenere-etd            Extend of Vigenere Cipher (256 ASCII characters)");        
+        System.out.println("        playfair                Playfair Cipher (26 alphabet characters)\n");
         System.out.println("    input_mode: default = stdio");
-        System.out.println("        --stdio         Standar input from terminal");
-        System.out.println("        --text filename Read text from file eksternal");
-        System.out.println("        --file filename Encrypt/decrypt file\n");
+        System.out.println("        --stdio                 Standar input from terminal");
+        System.out.println("        --text filename         Read text from file eksternal");
+        System.out.println("        --file filename output  Encrypt/decrypt file\n");
+    }
+
+    private static void handleFile() {
+
     }
 
 }
