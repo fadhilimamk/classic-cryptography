@@ -36,24 +36,19 @@ public class Encryptor {
         return b;
     }
 
-    public Encryptor Encrypt(String plain) {
-        plain = plain.toUpperCase(); space = plain;
-        if (choosenAlgorithm == PLAYFAIR) {
-            plain = plain.replace('J', 'I');
-        } else if (choosenAlgorithm == VIGENERE_STANDARD) {
+    public Encryptor Encrypt(byte[] plain) {
+        // Preprocessing for specific algorithm
+        if (choosenAlgorithm == VIGENERE_STANDARD || choosenAlgorithm == PLAYFAIR) {
+            String plainText = new String(plain); space = plainText;
             StringBuilder builder = new StringBuilder();
 
-            for (char ch : plain.toCharArray()) 
+            for (char ch : plainText.toCharArray()) 
                 if (Character.isAlphabetic(ch)) 
                     builder.append(ch);
-
-            plain = builder.toString();
+            plainText = builder.toString();
+            plain = stringToBytesASCII(plainText);
         }
-        Encrypt(stringToBytesASCII(plain));
-        return main;
-    }
 
-    public Encryptor Encrypt(byte[] plain) {
         this.plain = plain;
         if (choosenAlgorithm == VIGENERE_STANDARD) {
             DoVigenereEncrypt();

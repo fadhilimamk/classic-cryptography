@@ -22,11 +22,6 @@ public class Decryptor {
         return this;
     }
 
-    public Decryptor Decrypt(String chiper) {
-        System.out.println(chiper);
-        return Decrypt(Encryptor.stringToBytesASCII(chiper));
-    }
-
     public Decryptor Decrypt(byte[] chiper) {
         this.chiper = chiper;
         if (choosenAlgorithm == Encryptor.VIGENERE_STANDARD) {
