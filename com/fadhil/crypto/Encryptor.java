@@ -91,9 +91,6 @@ public class Encryptor {
 
     public void ExportCipher(String outfile) throws IOException {
         FileOutputStream fos = new FileOutputStream(outfile);
-        for (int i = 0; i < plain.length; i++)
-            System.out.printf("%d ", plain[i]);
-        System.out.println();
         fos.write(plain);
         fos.close();
     }
@@ -112,9 +109,7 @@ public class Encryptor {
         int j = 0, i = 0, keyLength = key.length();
 
         for (i = 0; i < plain.length; i++) {
-            System.out.printf("%d -> %d : ", plain[i], ((plain[i] + key.charAt(j)) % 256));
             plain[i] = (byte) ((plain[i] + key.charAt(j)) % 256);
-            System.out.printf("%d\n", plain[i]);
             j = (j + 1)%keyLength;
         }
     }

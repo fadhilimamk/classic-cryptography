@@ -45,12 +45,9 @@ public class Decryptor {
     }
 
     public void ExportPlain(String outfile) throws IOException {
-        FileWriter fw = new FileWriter(outfile);
-        PrintWriter pw = new PrintWriter(fw);
-        pw.print(new String(chiper));
-        pw.flush();
-        pw.close();
-        fw.close();
+        FileOutputStream fos = new FileOutputStream(outfile);
+        fos.write(chiper);
+        fos.close();
     }
 
     private void DoVigenereDecrypt() {

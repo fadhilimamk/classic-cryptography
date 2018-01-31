@@ -75,8 +75,13 @@ public class Main {
                     }
 
                     filename = args[3]; outfile = args[4];
-                    handleFile(filename, outfile);
-                    return;
+                    file = new File(filename);
+                    fin = new FileInputStream(file);
+
+                    content = new byte[(int)file.length()];
+                    fin.read(content);
+                    fin.close();
+                    
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -119,7 +124,16 @@ public class Main {
                 .SetKey(key)
                 .Decrypt(content);
             System.out.println("Plain         : "); 
-            d.ShowPlain();
+            if (outfile == null) {
+                d.ShowPlain();
+            } else {
+                try {
+                    d.ExportPlain(outfile);
+                    System.out.println("Saved to \"" + outfile +"\"");
+                } catch (Exception ex) {
+                    System.out.print("Error: " + ex.getMessage());
+                }
+            }
         }
 
     }
