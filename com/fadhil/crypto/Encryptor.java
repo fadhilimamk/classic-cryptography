@@ -46,6 +46,11 @@ public class Encryptor {
                 if (Character.isAlphabetic(ch)) 
                     builder.append(ch);
             plainText = builder.toString();
+
+            if (choosenAlgorithm == PLAYFAIR && plainText.length()%2 == 1) {
+                plainText += "Z"; space += "Z";
+            }
+
             plain = stringToBytesASCII(plainText);
         }
 
@@ -171,6 +176,8 @@ public class Encryptor {
             }
             // Create cipher
             System.out.print("->"+keyMatrix[a][d] + keyMatrix[c][b] + " ");
+            plain[i] = (byte) keyMatrix[a][d];
+            plain[i+1] = (byte) keyMatrix[c][b];
 
             i+=2;
             if (same) {
@@ -182,7 +189,7 @@ public class Encryptor {
 
     }
 
-    private String UniqueKey(String string) {
+    public static String UniqueKey(String string) {
         char[] chars = string.toCharArray();
 
         Set<Character> charSet = new LinkedHashSet<Character>();

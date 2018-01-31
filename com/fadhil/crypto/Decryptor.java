@@ -72,7 +72,38 @@ public class Decryptor {
     }
 
     private void DoPlayFairDecrypt() {
+        // Prepare key matrix
+        key += "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+        key = Encryptor.UniqueKey(key);
+        char[][] keyMatrix = new char[6][6];
+        int k = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                keyMatrix[i][j] = key.charAt(k++);
+            }   
+        }
+        // extend matrix
+        for (int i = 0; i < 5; i++) {
+            keyMatrix[5][i] = keyMatrix[0][i];
+            keyMatrix[i][5] = keyMatrix[i][0];
+        }
+        keyMatrix[5][5] = ' ';
 
+        // Print matrix
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                System.out.print(keyMatrix[i][j] + " ");
+            }   
+            System.out.println();
+        }
+
+        // Decryption Process 
+        int i = 0;
+        while (i < chiper.length) {
+
+
+            i++;
+        }
     }
 
 }
