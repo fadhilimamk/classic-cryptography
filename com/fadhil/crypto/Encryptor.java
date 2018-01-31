@@ -11,7 +11,7 @@ public class Encryptor {
     public static int PLAYFAIR = 3;
 
     private byte[] plain;
-    private String key;
+    private String key, space;
     private int choosenAlgorithm;
     public static Encryptor main;
 
@@ -27,23 +27,49 @@ public class Encryptor {
         return this;
     }
 
-    public String Encrypt(String plain) {
-        plain = plain.toUpperCase();
+    public Encryptor Encrypt(String plain) {
+        plain = plain.toUpperCase(); space = plain;
+        plain = plain.replaceAll("\\s+","");
         if (choosenAlgorithm == PLAYFAIR) {
             plain = plain.replace('J', 'I');
         }
-        return Encrypt(plain.toUpperCase().getBytes());
+        Encrypt(plain.toUpperCase().getBytes());
+        return main;
     }
 
-    public String Encrypt(byte[] plain) {
+    public void Encrypt(byte[] plain) {
         this.plain = plain;
         if (choosenAlgorithm == VIGENERE_STANDARD) {
             DoVigenereEncrypt();
-            return new String(plain);
+        } else if (choosenAlgorithm == VIGENERE_EXTENDED) {
+            DoVigenereExtendEncrypt();
         } else if (choosenAlgorithm == PLAYFAIR) {
             DoPlayFairEncrypt();
         }
-        return "INIACAK";
+    }
+
+    public void ShowCipher() {
+        String cipher = new String(plain);
+        int cipherLength = cipher.length(), j = 0;
+
+        for(int i = 0; i < space.length(); i++) {
+            if (space.charAt(i) == ' ') {
+                System.out.print(" ");
+            } else {
+                System.out.print(cipher.charAt(j));
+                j++;
+            }
+        }
+        System.out.println();
+
+        System.out.println(cipher);
+        for(int i = 0; i < cipherLength; i++) {
+            if (i % 5 == 0 && i != 0) {
+                System.out.print(" ");
+            }
+            System.out.print(cipher.charAt(i));
+        }
+        System.out.println();
     }
 
     private void DoVigenereEncrypt() {
@@ -54,6 +80,15 @@ public class Encryptor {
             j = (j + 1)%keyLength;
         }
         
+    }
+
+    private void DoVigenereExtendEncrypt() {
+        int j = 0, i = 0, keyLength = key.length();
+
+        for (i = 0; i < plain.length; i++) {
+            plain[i] = (byte) ((plain[i] + key.charAt(j)) % 256);
+            j = (j + 1)%keyLength;
+        }
     }
 
     private void DoPlayFairEncrypt() {

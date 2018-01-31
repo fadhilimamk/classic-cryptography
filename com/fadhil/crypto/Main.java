@@ -50,6 +50,11 @@ public class Main {
             Scanner fileScanner;
 
             try {
+                
+                if (args.length < 4) {
+                    throw new Exception("Filename is required!");
+                }
+
                 if (args[2].equals(INPUT_TEXT)) {
                     filename = args[3]; file = new File(filename);
                     fileScanner = new Scanner(file);
@@ -61,8 +66,12 @@ public class Main {
                     text = sb.toString();
 
                 } else if (args[2].equals(INPUT_FILE)) {
-                    filename = args[3];
-                    byte byteBuffer[] = Files.readAllBytes(new File(filename).toPath());
+                    if (args.length < 5) {
+                        throw new Exception("Output filename is required!");
+                    }
+
+                    filename = args[3]; outfile = args[4];
+                    handleFile(filename, outfile);
                     return;
                 }
             } catch (Exception e) {
@@ -86,10 +95,11 @@ public class Main {
         }
 
         if (method == METHOD_ENCRYPT) {
-            System.out.println("Chiper        : " + 
-            Encryptor.New(algo)
+            Encryptor e = Encryptor.New(algo)
                 .SetKey(key)
-                .Encrypt(text));
+                .Encrypt(text);
+            System.out.println("Chiper        : ");
+            e.ShowCipher();
         } else {
             System.out.println("Plain         : " + 
             Decryptor.New(Encryptor.VIGENERE_STANDARD)
@@ -109,14 +119,22 @@ public class Main {
         System.out.println("        vigenere                Standard Vigenere Cipher (26 alphabet characters)");
         System.out.println("        vigenere-etd            Extend of Vigenere Cipher (256 ASCII characters)");        
         System.out.println("        playfair                Playfair Cipher (26 alphabet characters)\n");
-        System.out.println("    input_mode: default = stdio");
-        System.out.println("        --stdio                 Standar input from terminal");
+        System.out.println("    input_mode: [default=stdio]");
+        System.out.println("        --stdio                 Standard input from terminal");
         System.out.println("        --text filename         Read text from file eksternal");
         System.out.println("        --file filename output  Encrypt/decrypt file\n");
     }
 
-    private static void handleFile() {
+    private static void handleFile(String filename, String outfile) {
+        byte byteBuffer[];
 
+        try {
+            byteBuffer = Files.readAllBytes(new File(filename).toPath());
+        } catch (IOException e) {
+            System.out.println("Error: Can not find file \"" + filename + "\"!");
+            showHelp();
+        }
+         
     }
 
 }
