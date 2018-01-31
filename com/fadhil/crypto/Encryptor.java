@@ -28,17 +28,32 @@ public class Encryptor {
         return this;
     }
 
+    public static byte[] stringToBytesASCII(String str) {
+        byte[] b = new byte[str.length()];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte) str.charAt(i);
+        }
+        return b;
+    }
+
     public Encryptor Encrypt(String plain) {
         plain = plain.toUpperCase(); space = plain;
-        plain = plain.replaceAll("\\s+","");
         if (choosenAlgorithm == PLAYFAIR) {
             plain = plain.replace('J', 'I');
+        } else if (choosenAlgorithm == VIGENERE_STANDARD) {
+            StringBuilder builder = new StringBuilder();
+
+            for (char ch : plain.toCharArray()) 
+                if (Character.isAlphabetic(ch)) 
+                    builder.append(ch);
+
+            plain = builder.toString();
         }
-        Encrypt(plain.toUpperCase().getBytes());
+        Encrypt(stringToBytesASCII(plain));
         return main;
     }
 
-    public void Encrypt(byte[] plain) {
+    public Encryptor Encrypt(byte[] plain) {
         this.plain = plain;
         if (choosenAlgorithm == VIGENERE_STANDARD) {
             DoVigenereEncrypt();
@@ -47,6 +62,7 @@ public class Encryptor {
         } else if (choosenAlgorithm == PLAYFAIR) {
             DoPlayFairEncrypt();
         }
+        return main;
     }
 
     public void ShowCipher() {
@@ -54,8 +70,8 @@ public class Encryptor {
         int cipherLength = cipher.length(), j = 0;
 
         for(int i = 0; i < space.length(); i++) {
-            if (space.charAt(i) == ' ') {
-                System.out.print(" ");
+            if (!Character.isAlphabetic(space.charAt(i))) {
+                System.out.print(space.charAt(i));
             } else {
                 System.out.print(cipher.charAt(j));
                 j++;
@@ -74,12 +90,12 @@ public class Encryptor {
     }
 
     public void ExportCipher(String outfile) throws IOException {
-        FileWriter fw = new FileWriter(outfile);
-        PrintWriter pw = new PrintWriter(fw);
-        pw.print(new String(plain));
-        pw.flush();
-        pw.close();
-        fw.close();
+        FileOutputStream fos = new FileOutputStream(outfile);
+        for (int i = 0; i < plain.length; i++)
+            System.out.printf("%d ", plain[i]);
+        System.out.println();
+        fos.write(plain);
+        fos.close();
     }
 
     private void DoVigenereEncrypt() {
@@ -96,7 +112,9 @@ public class Encryptor {
         int j = 0, i = 0, keyLength = key.length();
 
         for (i = 0; i < plain.length; i++) {
+            System.out.printf("%d -> %d : ", plain[i], ((plain[i] + key.charAt(j)) % 256));
             plain[i] = (byte) ((plain[i] + key.charAt(j)) % 256);
+            System.out.printf("%d\n", plain[i]);
             j = (j + 1)%keyLength;
         }
     }

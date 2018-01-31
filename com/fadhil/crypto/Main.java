@@ -20,7 +20,7 @@ public class Main {
         Boolean isError = false;
         Scanner scanner = new Scanner(System.in);
         char method; String text = null, key = null; int algo;
-        String filename, outfile = null;
+        String filename = null, outfile = null; byte content[] = null;
         File file;
 
         System.out.println("    ______                 __      ");
@@ -47,7 +47,7 @@ public class Main {
 
         // Handle input_mode
         if (args.length > 2) {
-            Scanner fileScanner;
+            FileInputStream fin = null;
 
             try {
                 
@@ -59,13 +59,11 @@ public class Main {
                     outfile = args[3];
                 } else if (args[2].equals(INPUT_TEXT)) {
                     filename = args[3]; file = new File(filename);
-                    fileScanner = new Scanner(file);
+                    fin = new FileInputStream(file);
 
-                    StringBuilder sb = new StringBuilder();
-                    while (fileScanner.hasNext()) {
-                        sb.append(fileScanner.nextLine());
-                    }
-                    text = sb.toString();
+                    content = new byte[(int)file.length()];
+                    fin.read(content);
+                    fin.close();
 
                     if (args.length >= 5) {
                         outfile = args[4];
@@ -95,15 +93,16 @@ public class Main {
         // Read key and text
         System.out.print("Insert key    : ");
         key = scanner.nextLine();
-        if (text == null) {
+        if (content == null) {
             System.out.print("Insert text   : ");
             text = scanner.nextLine();
+            content = Encryptor.stringToBytesASCII(text);
         }
 
         if (method == METHOD_ENCRYPT) {
             Encryptor e = Encryptor.New(algo)
                 .SetKey(key)
-                .Encrypt(text);
+                .Encrypt(content);
             System.out.println("Chiper        : ");
             if (outfile == null) {
                 e.ShowCipher();
@@ -116,9 +115,9 @@ public class Main {
                 }
             }
         } else {
-            Decryptor d = Decryptor.New(Encryptor.VIGENERE_STANDARD)
+            Decryptor d = Decryptor.New(algo)
                 .SetKey(key)
-                .Decrypt(text);
+                .Decrypt(content);
             System.out.println("Plain         : "); 
             d.ShowPlain();
         }
