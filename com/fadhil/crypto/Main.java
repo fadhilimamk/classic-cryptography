@@ -20,6 +20,7 @@ public class Main {
         Boolean isError = false;
         Scanner scanner = new Scanner(System.in);
         char method; String text = null, key = null; int algo;
+        String filename, outfile = null;
         File file;
 
         System.out.println("    ______                 __      ");
@@ -46,7 +47,6 @@ public class Main {
 
         // Handle input_mode
         if (args.length > 2) {
-            String filename, outfile;
             Scanner fileScanner;
 
             try {
@@ -55,7 +55,9 @@ public class Main {
                     throw new Exception("Filename is required!");
                 }
 
-                if (args[2].equals(INPUT_TEXT)) {
+                if (args[2].equals(INPUT_STDIO)) {
+                    outfile = args[3];
+                } else if (args[2].equals(INPUT_TEXT)) {
                     filename = args[3]; file = new File(filename);
                     fileScanner = new Scanner(file);
 
@@ -64,6 +66,10 @@ public class Main {
                         sb.append(fileScanner.nextLine());
                     }
                     text = sb.toString();
+
+                    if (args.length >= 5) {
+                        outfile = args[4];
+                    }
 
                 } else if (args[2].equals(INPUT_FILE)) {
                     if (args.length < 5) {
@@ -99,30 +105,40 @@ public class Main {
                 .SetKey(key)
                 .Encrypt(text);
             System.out.println("Chiper        : ");
-            e.ShowCipher();
+            if (outfile == null) {
+                e.ShowCipher();
+            } else {
+                try {
+                    e.ExportCipher(outfile);
+                    System.out.println("Saved to \"" + outfile +"\"");
+                } catch (Exception ex) {
+                    System.out.print("Error: " + ex.getMessage());
+                }
+            }
         } else {
-            System.out.println("Plain         : " + 
-            Decryptor.New(Encryptor.VIGENERE_STANDARD)
+            Decryptor d = Decryptor.New(Encryptor.VIGENERE_STANDARD)
                 .SetKey(key)
-                .Decrypt(text));
+                .Decrypt(text);
+            System.out.println("Plain         : "); 
+            d.ShowPlain();
         }
 
     }
 
     private static void showHelp() {
         System.out.println("USAGE:");
-        System.out.println("    method algorithm [input_mode] [file]\n");
+        System.out.println("    method algorithm [io_mode]\n");
         System.out.println("    method:");
-        System.out.println("        e                       Encryption mode, use this to encrypt text or file");
-        System.out.println("        d                       Decryption mode, use this to decrypt text or file\n");
-        System.out.println("    algorithm:");
-        System.out.println("        vigenere                Standard Vigenere Cipher (26 alphabet characters)");
-        System.out.println("        vigenere-etd            Extend of Vigenere Cipher (256 ASCII characters)");        
-        System.out.println("        playfair                Playfair Cipher (26 alphabet characters)\n");
-        System.out.println("    input_mode: [default=stdio]");
-        System.out.println("        --stdio                 Standard input from terminal");
-        System.out.println("        --text filename         Read text from file eksternal");
-        System.out.println("        --file filename output  Encrypt/decrypt file\n");
+        System.out.println("        e                          Encryption mode, use this to encrypt text or file");
+        System.out.println("        d                          Decryption mode, use this to decrypt text or file\n");
+        System.out.println("    algorithm:");   
+        System.out.println("        vigenere                   Standard Vigenere Cipher (26 alphabet characters)");
+        System.out.println("        vigenere-etd               Extend of Vigenere Cipher (256 ASCII characters)");        
+        System.out.println("        playfair                   Playfair Cipher (26 alphabet characters)\n");
+        System.out.println("    io_mode: [default=stdio]");
+        System.out.println("        --stdio [output]           Standard from terminal");
+        System.out.println("        --text  filename [output]  Read text from file eksternal");
+        System.out.println("        --file  filename output    Encrypt/decrypt file\n");
     }
 
     private static void handleFile(String filename, String outfile) {

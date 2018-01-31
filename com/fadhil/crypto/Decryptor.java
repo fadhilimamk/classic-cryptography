@@ -20,17 +20,21 @@ public class Decryptor {
         return this;
     }
 
-    public String Decrypt(String chiper) {
+    public Decryptor Decrypt(String chiper) {
         return Decrypt(chiper.toUpperCase().getBytes());
     }
 
-    public String Decrypt(byte[] chiper) {
+    public Decryptor Decrypt(byte[] chiper) {
         this.chiper = chiper;
         if (choosenAlgorithm == Encryptor.VIGENERE_STANDARD) {
             DoVigenereDecrypt();
-            return new String(chiper);
         }
-        return "INI TERTATA";
+        return main;
+    }
+
+    public void ShowPlain() {
+        String plain = new String(chiper);
+        System.out.println(plain);
     }
 
     private void DoVigenereDecrypt() {

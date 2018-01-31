@@ -3,6 +3,7 @@ package com.fadhil.crypto;
 import java.nio.ByteBuffer;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.io.*;
 
 public class Encryptor {
 
@@ -70,6 +71,15 @@ public class Encryptor {
             System.out.print(cipher.charAt(i));
         }
         System.out.println();
+    }
+
+    public void ExportCipher(String outfile) throws IOException {
+        FileWriter fw = new FileWriter(outfile);
+        PrintWriter pw = new PrintWriter(fw);
+        pw.print(new String(plain));
+        pw.flush();
+        pw.close();
+        fw.close();
     }
 
     private void DoVigenereEncrypt() {
