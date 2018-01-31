@@ -144,7 +144,7 @@ public class Encryptor {
         int i = 0;
         while (i < plain.length) {
             boolean same = false;
-            char x = (char)plain[i], y = (char)( i+1 == plain.length ? 'Z' : plain[i+1]);
+            char x = (char)plain[i], y = (char)(plain[i+1]);
             if (x == y) {
                 y = 'Z';
                 same = true;
@@ -175,9 +175,18 @@ public class Encryptor {
                 }
             }
             // Create cipher
-            System.out.print("->"+keyMatrix[a][d] + keyMatrix[c][b] + " ");
-            plain[i] = (byte) keyMatrix[a][d];
-            plain[i+1] = (byte) keyMatrix[c][b];
+            if (b == d) {
+                plain[i] = (byte) keyMatrix[a][b+1];
+                plain[i+1] = (byte) keyMatrix[c][d+1];    
+            } else if (a == c) {
+                plain[i] = (byte) keyMatrix[a+1][b];
+                plain[i+1] = (byte) keyMatrix[c+1][d];    
+            } else {
+                plain[i] = (byte) keyMatrix[a][d];
+                plain[i+1] = (byte) keyMatrix[c][b];
+            }
+            System.out.print("->"+(char)plain[i] +""+ (char)plain[i+1] + " ");
+            
 
             i+=2;
             if (same) {

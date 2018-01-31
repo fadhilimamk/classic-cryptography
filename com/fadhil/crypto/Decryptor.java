@@ -100,9 +100,46 @@ public class Decryptor {
         // Decryption Process 
         int i = 0;
         while (i < chiper.length) {
+            char x = (char)chiper[i], y = (char)chiper[i+1];
+            int a = 0, b = 0, c = 0, d = 0; Character firstFound = null;
+            boolean finish = false;
+            
+            System.out.print((char)x + "" + (char)y);
+            for (int j = 0; j < 6 && !finish; j++) {
+                for (k = 0; k < 6 && !finish; k++) {
+                    if (keyMatrix[j][k] == x || keyMatrix[j][k] == y) {
+                        if (firstFound == null) {
+                            firstFound = keyMatrix[j][k];
+                            if (firstFound == x) {
+                                a = j; b = k;
+                            } else {
+                                c = j; d = k;    
+                            }
+                        } else if (keyMatrix[j][k] != firstFound) {
+                            if (firstFound == y) {
+                                a = j; b = k;
+                            } else {
+                                c = j; d = k;    
+                            }
+                            finish = true;
+                        }
+                    }
+                }
+            }
 
+            if (b == d) {
+                chiper[i] = (byte) keyMatrix[a][b-1];
+                chiper[i+1] = (byte) keyMatrix[c][d-1];    
+            } else if (a == c) {
+                chiper[i] = (byte) keyMatrix[a-1][b];
+                chiper[i+1] = (byte) keyMatrix[c-1][d];    
+            } else {
+                chiper[i] = (byte) keyMatrix[a][d];
+                chiper[i+1] = (byte) keyMatrix[c][b];
+            }
+            System.out.print("->"+(char)chiper[i] +""+ (char)chiper[i+1] + " ");
 
-            i++;
+            i+=2;
         }
     }
 
